@@ -70,7 +70,50 @@ function play(){
                 bird_dy = -7.6;
             }
         });
-
+        document.addEventListener('keyup', (e) => {
+            if(e.key == 'ArrowUp' || e.key == ' '){
+                img.src = 'Images/Bird.png';
+            }
+        });
+        if(bird_props.top <= 0 || bird_props.bottom >= background.bottom){
+            game_state = 'End';
+            message.style.left = '28vw';
+            window.location.reload();
+            message.classList.remove('messageStyle');
+            return;
+        }
+        bird.style.top = bird_props.top + bird_dy + 'px';
+        bird_props = bird.getBoundingClientRect();
+        requestAnimationFrame(apply_gravity);
     }
+    requestAnimationFrame(apply_gravity);
+
+    let pipe_separation = 0;
+    let pipe_gap = 35;
+
+    function create_pipe(){
+        if(game_state != 'Play') return;
+
+        if(pipe_separation > 115){
+            pipe_separation = 0;
+            let pipe_position = Math.floor(Math.random() * 43) + 8;
+            let pipe_sprite_inv = document.createElement('div');
+            pipe_sprite_inv.className = 'pipe_sprite';
+            pipe_sprite_inv.style.top = pipe_position - 70 + 'vh';
+            pipe_sprite_inv.style.left = '100vw';
+
+            document.body.appendChild(pipe_sprite_inv);
+            let pipe_sprite = document.createElement('div');
+            pipe_sprite.className = 'pipe_sprite';
+            pipe_sprite.style.top = pipe_position + pipe_gap + 'vh';
+            pipe_sprite.style.left = '100vw';
+            pipe_sprite.increase_score = '1';
+
+            document.body.appendChild(pipe_sprite);
+        }
+        pipe_separation++;
+        requestAnimationFrame(create_pipe);
+    } 
+    requestAnimationFrame(create_pipe);
 }
 
